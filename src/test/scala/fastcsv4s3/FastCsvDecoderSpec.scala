@@ -40,7 +40,7 @@ class FastCsvDecoderSpec  extends AnyFunSuite with OptionValues with EitherValue
     val rec = csv.stream().toScala(LazyList).headOption.value
     val result = FastCsvDecoder[Person].decode(rec)
     assert(result.isLeft)
-    assert(result.left.value === "Invalid Long: ")
+    assert(result.left.value === "Invalid Long value: 'not_a_number'")
   }
 
   test("should return error when numeric field is missing") {
@@ -52,7 +52,7 @@ class FastCsvDecoderSpec  extends AnyFunSuite with OptionValues with EitherValue
     val rec = csv.stream().toScala(LazyList).headOption.value
     val result = FastCsvDecoder[Person].decode(rec)
     assert(result.isLeft)
-    assert(result.left.value === "Invalid Long: ")
+    assert(result.left.value === "Invalid Long value: ''")
   }
 
   test("should decode CSV with extra records") {
@@ -85,6 +85,6 @@ class FastCsvDecoderSpec  extends AnyFunSuite with OptionValues with EitherValue
     val rec = csv.stream().toScala(LazyList).headOption.value
     val result = FastCsvDecoder[Person].decode(rec)
     assert(result.isLeft)
-    assert(result.left.value === "Invalid Long:  1 ")
+    assert(result.left.value === "Invalid Long value: ' 1 '")
   }
 }
