@@ -1,0 +1,3 @@
+package fastcsv4s3.fieldDecoderInstance
+
+object FieldDecoderInstance extends HiPriorityFieldDecoderInstance with LowPriorityFieldDecoderInstance

@@ -1,15 +1,19 @@
 package fastcsv4s3
 
-import de.siegmar.fastcsv.reader.{CsvReader, NamedCsvRecord}
-import fastcsv4s3.FieldDecoderInstance.given
-import org.scalatest.{EitherValues, OptionValues}
+
+
+import fastcsv4s3.fastCsvDecoderInstance.NamedCsvRecordDecoder
 import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.{EitherValues, OptionValues}
 
 import scala.deriving.Mirror
-import scala.jdk.CollectionConverters.*
 import scala.jdk.StreamConverters.*
 
 class FastCsvDecoderSpec  extends AnyFunSuite with OptionValues with EitherValues {
+
+  import de.siegmar.fastcsv.reader.{CsvReader, NamedCsvRecord}
+  import fastcsv4s3.fieldDecoderInstance.FieldDecoderInstance.given
+
 
   case class Person(id: Long, firstName: String, lastName: String)
 
@@ -22,9 +26,10 @@ class FastCsvDecoderSpec  extends AnyFunSuite with OptionValues with EitherValue
     val csv = CsvReader.builder().ofNamedCsvRecord(data)
     val results = csv.stream()
       .toScala(LazyList)
-      .map { rec =>  FastCsvDecoder[Person].decode(rec) }
+      .map { rec =>
+        NamedCsvRecordDecoder[Person].decode(rec)
+      }
       .toList
-
     assert(results == List(
       Right(Person(1, "John", "Doe")),
       Right(Person(2, "Jane", "Smith"))
@@ -38,7 +43,7 @@ class FastCsvDecoderSpec  extends AnyFunSuite with OptionValues with EitherValue
 
     val csv = CsvReader.builder().ofNamedCsvRecord(data)
     val rec = csv.stream().toScala(LazyList).headOption.value
-    val result = FastCsvDecoder[Person].decode(rec)
+    val result = NamedCsvRecordDecoder[Person].decode(rec)
     assert(result.isLeft)
     assert(result.left.value === "Invalid Long value: 'not_a_number'")
   }
@@ -50,7 +55,7 @@ class FastCsvDecoderSpec  extends AnyFunSuite with OptionValues with EitherValue
 
     val csv = CsvReader.builder().ofNamedCsvRecord(data)
     val rec = csv.stream().toScala(LazyList).headOption.value
-    val result = FastCsvDecoder[Person].decode(rec)
+    val result = NamedCsvRecordDecoder[Person].decode(rec)
     assert(result.isLeft)
     assert(result.left.value === "Invalid Long value: ''")
   }
@@ -65,7 +70,7 @@ class FastCsvDecoderSpec  extends AnyFunSuite with OptionValues with EitherValue
     val csv = CsvReader.builder().ofNamedCsvRecord(data)
     val results = csv.stream()
       .toScala(LazyList)
-      .map(FastCsvDecoder[Person].decode)
+      .map(NamedCsvRecordDecoder[Person].decode)
       .toList
 
     assert(results == List(
@@ -83,7 +88,7 @@ class FastCsvDecoderSpec  extends AnyFunSuite with OptionValues with EitherValue
 
     val csv = CsvReader.builder().ofNamedCsvRecord(data)
     val rec = csv.stream().toScala(LazyList).headOption.value
-    val result = FastCsvDecoder[Person].decode(rec)
+    val result = NamedCsvRecordDecoder[Person].decode(rec)
     assert(result.isLeft)
     assert(result.left.value === "Invalid Long value: ' 1 '")
   }

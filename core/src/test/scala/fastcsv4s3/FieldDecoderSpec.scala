@@ -5,10 +5,10 @@ import org.scalatest.{EitherValues, OptionValues}
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import FieldDecoderInstance.given
-import fastcsv4s3.FieldDecoder.given
 
 class FieldDecoderSpec extends AnyFunSuite with OptionValues with EitherValues {
+  import fastcsv4s3.fieldDecoderInstance.FieldDecoderInstance.given
+
   case class Id(value: String)
   case class Age(value: Int)
   case class WrapAge(age: Age)
